@@ -4,11 +4,44 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal"
-    Title="ProyectoFinal_Movil_BibliotecaPersonal">
+    xmlns:views="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.Views"
+    Title="ProyectoFinal_Movil_BibliotecaPersonal"
+    FlyoutBehavior="Flyout"
+    FlyoutBackgroundColor="{AppThemeBinding Light=#FAF0E6, Dark=#2C2416}"
+    Shell.NavBarHasShadow="True">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <Shell.FlyoutHeader>
+        <Grid BackgroundColor="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"
+              HeightRequest="150" Padding="20">
+            <VerticalStackLayout VerticalOptions="Center">
+                <Label Text="📚" FontSize="40" HorizontalOptions="Center"/>
+                <Label Text="Biblioteca Personal"
+                       FontSize="18" FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
 
+    <FlyoutItem Title="Mi Biblioteca" Route="library">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="&#x1F4DA;" FontFamily="OpenSansRegular" Size="22"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate views:LibraryPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Buscar Libros" Route="search">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="&#x1F50D;" FontFamily="OpenSansRegular" Size="22"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate views:SearchPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Estadísticas" Route="statistics">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="&#x1F4CA;" FontFamily="OpenSansRegular" Size="22"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate views:StatisticsPage}"/>
+    </FlyoutItem>
+    
 </Shell>

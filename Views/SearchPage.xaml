@@ -1,12 +1,77 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.ViewModels"
+             xmlns:models="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.Models"
              x:Class="ProyectoFinal_Movil_BibliotecaPersonal.Views.SearchPage"
-             Title="SearchPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Style="{StaticResource PageStyle}"
+             Title="Buscar Libros">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <VerticalStackLayout Grid.Row="0" Padding="16,16,16,8" Spacing="8">
+            <Label Text="Buscar en Google Books" Style="{StaticResource TitleStyle}"/>
+            <Entry x:Name="SearchEntry"
+                   Text="{Binding SearchQuery, Mode=TwoWay}"
+                   Placeholder="Título, autor o tema..."
+                   Style="{StaticResource StandardEntryStyle}"
+                   ReturnCommand="{Binding SearchCommand}"/>
+            <Button Text="🔍 Buscar"
+                    Command="{Binding SearchCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}"/>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Padding="16,0">
+            <Label Text="{Binding StatusMessage}" Style="{StaticResource CaptionStyle}"/>
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="End"
+                               Color="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"/>
+        </Grid>
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding SearchResults}">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="40">
+                    <Label Text="🔍" FontSize="48" HorizontalOptions="Center"/>
+                    <Label Text="Busca libros por título o autor" Style="{StaticResource BodyStyle}" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:BookSearchResult">
+                    <Border Style="{StaticResource CardStyle}">
+                        <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="10">
+
+                            <Border Grid.Column="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="{AppThemeBinding Light=#DEB887, Dark=#6B4E2A}"
+                                    HeightRequest="80" WidthRequest="56">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="4"/>
+                                </Border.StrokeShape>
+                                <Image Source="{Binding ThumbnailUrl}"
+                                       Aspect="AspectFill"/>
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                <Label Text="{Binding Title}" Style="{StaticResource SubtitleStyle}"
+                                       FontSize="14" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Author}" Style="{StaticResource BodyStyle}" FontSize="12"/>
+                                <Label Text="{Binding Publisher}" Style="{StaticResource CaptionStyle}"/>
+                            </VerticalStackLayout>
+
+                            <Button Grid.Column="2"
+                                    Text="＋"
+                                    FontSize="20"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    HeightRequest="44" WidthRequest="44" Padding="0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AddToLibraryCommand}"
+                                    CommandParameter="{Binding .}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
 </ContentPage>

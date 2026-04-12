@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace ProyectoFinal_Movil_BibliotecaPersonal
+﻿namespace ProyectoFinal_Movil_BibliotecaPersonal
 {
     public partial class App : Application
     {
@@ -8,7 +6,6 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal
         {
             InitializeComponent();
         }
-
         protected override Window CreateWindow(IActivationState? activationState)
         {
             return new Window(new AppShell());

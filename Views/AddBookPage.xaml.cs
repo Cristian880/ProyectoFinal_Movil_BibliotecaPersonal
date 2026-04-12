@@ -1,9 +1,12 @@
+using ProyectoFinal_Movil_BibliotecaPersonal.ViewModels;
+
 namespace ProyectoFinal_Movil_BibliotecaPersonal.Views;
 
 public partial class AddBookPage : ContentPage
 {
-	public AddBookPage()
-	{
-		InitializeComponent();
-	}
+    public AddBookPage(AddBookViewModel vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
+    }
 }

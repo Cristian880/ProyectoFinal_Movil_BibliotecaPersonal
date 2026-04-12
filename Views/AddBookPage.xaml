@@ -1,12 +1,81 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.ViewModels"
+             xmlns:models="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.Models"
              x:Class="ProyectoFinal_Movil_BibliotecaPersonal.Views.AddBookPage"
-             Title="AddBookPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Style="{StaticResource PageStyle}"
+             Title="Agregar Libro">
+    
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+
+            <Label Text="Agregar Nuevo Libro" Style="{StaticResource TitleStyle}"/>
+
+            <Label Text="Título *" Style="{StaticResource CaptionStyle}"/>
+            <Entry Text="{Binding BookTitle, Mode=TwoWay}"
+                   Placeholder="Título del libro"
+                   Style="{StaticResource StandardEntryStyle}"/>
+
+            <Label Text="Autor *" Style="{StaticResource CaptionStyle}"/>
+            <Entry Text="{Binding Author, Mode=TwoWay}"
+                   Placeholder="Nombre del autor"
+                   Style="{StaticResource StandardEntryStyle}"/>
+
+            <Label Text="ISBN" Style="{StaticResource CaptionStyle}"/>
+            <Entry Text="{Binding ISBN, Mode=TwoWay}"
+                   Placeholder="ISBN (opcional)"
+                   Keyboard="Numeric"
+                   Style="{StaticResource StandardEntryStyle}"/>
+
+            <Label Text="Año de publicación" Style="{StaticResource CaptionStyle}"/>
+            <Entry Text="{Binding YearText, Mode=TwoWay}"
+                   Placeholder="Ej: 2023"
+                   Keyboard="Numeric"
+                   Style="{StaticResource StandardEntryStyle}"/>
+
+            <Label Text="Género" Style="{StaticResource CaptionStyle}"/>
+            <Picker ItemsSource="{Binding Genres}"
+                    SelectedItem="{Binding Genre, Mode=TwoWay}"
+                    Title="Selecciona un género"
+                    TextColor="{AppThemeBinding Light=#8B4513, Dark=#DEB887}"/>
+
+            <Label Text="Número de páginas" Style="{StaticResource CaptionStyle}"/>
+            <Entry Text="{Binding PagesText, Mode=TwoWay}"
+                   Placeholder="Número de páginas"
+                   Keyboard="Numeric"
+                   Style="{StaticResource StandardEntryStyle}"/>
+
+            <Label Text="Calificación (1-5)" Style="{StaticResource CaptionStyle}"/>
+            <Slider Minimum="1" Maximum="5" Value="{Binding Rating, Mode=TwoWay}"
+                    MinimumTrackColor="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"
+                    MaximumTrackColor="#CCCCCC"/>
+            <Label Text="{Binding Rating, StringFormat='⭐ {0:F0}'}"
+                   HorizontalOptions="Center" Style="{StaticResource BodyStyle}"/>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Grid.Column="0" Text="¿Ya lo leíste?" Style="{StaticResource BodyStyle}" VerticalOptions="Center"/>
+                <CheckBox Grid.Column="1" IsChecked="{Binding IsRead, Mode=TwoWay}"
+                          Color="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"/>
+            </Grid>
+
+            <Label Text="Notas personales" Style="{StaticResource CaptionStyle}"/>
+            <Editor Text="{Binding Notes, Mode=TwoWay}"
+                    Placeholder="Notas, reseña personal..."
+                    HeightRequest="80"
+                    BackgroundColor="{AppThemeBinding Light=#FFF8DC, Dark=#3D3020}"/>
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               Color="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"/>
+
+            <Button Text="💾 Guardar Libro"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Margin="0,10,0,0"/>
+
+            <Button Text="Cancelar"
+                    Command="{Binding CancelCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

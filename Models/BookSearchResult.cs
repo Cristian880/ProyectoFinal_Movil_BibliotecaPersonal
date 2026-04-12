@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProyectoFinal_Movil_BibliotecaPersonal.Models
+﻿namespace ProyectoFinal_Movil_BibliotecaPersonal.Models
 {
-    internal class BookSearchResult
+    public class BookSearchResult
     {
+        public string Id { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
+        public string ThumbnailUrl { get; set; } = string.Empty;
+        public string Publisher { get; set; } = string.Empty;
     }
 }

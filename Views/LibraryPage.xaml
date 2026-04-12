@@ -1,12 +1,167 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.ViewModels"
+             xmlns:models="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.Models"
              x:Class="ProyectoFinal_Movil_BibliotecaPersonal.Views.LibraryPage"
-             Title="LibraryPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+             Style="{StaticResource PageStyle}"
+             Title="{Binding Title}">
+    
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+            <!-- Header stats -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,*,*"
+              BackgroundColor="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"
+              Padding="16,10">
+                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
+                    <Label Text="{Binding TotalBooks}"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center"/>
+                    <Label Text="Total" FontSize="11"
+                       TextColor="#F5DEB3" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
+                    <Label Text="{Binding ReadBooks}"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center"/>
+                    <Label Text="Leídos" FontSize="11"
+                       TextColor="#F5DEB3" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                    <Label Text="{Binding ReadPercent}"
+                       FontSize="14" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center"/>
+                    <Label Text="Progreso" FontSize="11"
+                       TextColor="#F5DEB3" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- SearchBar -->
+            <SearchBar Grid.Row="1"
+                   Text="{Binding SearchText}"
+                   Placeholder="Buscar por título o autor..."
+                   Margin="8,8"
+                   BackgroundColor="{AppThemeBinding Light=#FFF8DC, Dark=#3D3020}"/>
+
+            <!-- Filter Picker -->
+            <Picker Grid.Row="2"
+                ItemsSource="{Binding FilterOptions}"
+                SelectedItem="{Binding SelectedFilter}"
+                Title="Filtrar"
+                Margin="8,0,8,8"
+                TextColor="{AppThemeBinding Light=#8B4513, Dark=#DEB887}"/>
+
+            <!-- Loading -->
+            <ActivityIndicator Grid.Row="3"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"
+                           VerticalOptions="Start"
+                           Margin="0,20"/>
+
+            <!-- Book List -->
+            <RefreshView Grid.Row="3"
+                     Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsBusy}">
+                <CollectionView ItemsSource="{Binding Books}">
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center"
+                                         HorizontalOptions="Center"
+                                         Spacing="12" Padding="40">
+                            <Label Text="📚" FontSize="64" HorizontalOptions="Center"/>
+                            <Label Text="Tu biblioteca está vacía"
+                               Style="{StaticResource SubtitleStyle}"
+                               HorizontalOptions="Center"/>
+                            <Label Text="Agrega tu primer libro o busca en la API"
+                               Style="{StaticResource CaptionStyle}"
+                               HorizontalOptions="Center"/>
+                            <Button Text="+ Agregar Libro"
+                                Command="{Binding AddBookCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Book">
+                        <Border Style="{StaticResource CardStyle}">
+                            <Grid ColumnDefinitions="70,*,Auto" ColumnSpacing="12">
+
+                                <!-- Cover placeholder -->
+                                <Border Grid.Column="0"
+                                        StrokeThickness="0"
+                                        BackgroundColor="{AppThemeBinding Light=#DEB887, Dark=#6B4E2A}"
+                                        HeightRequest="90" WidthRequest="65">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="6"/>
+                                    </Border.StrokeShape>
+                                    <Label Text="📖"
+                                           FontSize="30"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+
+                                <!-- Info -->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Spacing="3"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Title}"
+                                           Style="{StaticResource SubtitleStyle}"
+                                           FontSize="15"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Author}"
+                                           Style="{StaticResource BodyStyle}"
+                                           FontSize="13"/>
+                                    <Label Text="{Binding Genre}"
+                                           Style="{StaticResource CaptionStyle}"/>
+                                    <Label Text="{Binding IsRead, Converter={StaticResource BoolToReadConverter}}"
+                                           FontSize="11"/>
+                                    <Label Text="{Binding Rating, Converter={StaticResource RatingToStarsConverter}}"
+                                           FontSize="12"/>
+                                </VerticalStackLayout>
+
+                                <!-- Actions -->
+                                <VerticalStackLayout Grid.Column="2"
+                                                     Spacing="4"
+                                                     VerticalOptions="Center">
+                                    <Button Text="✏️"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{AppThemeBinding Light=#8B4513, Dark=#DEB887}"
+                                            FontSize="18"
+                                            HeightRequest="38" WidthRequest="38"
+                                            Padding="0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewDetailsCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    <Button Text="✓"
+                                            BackgroundColor="Transparent"
+                                            TextColor="#4CAF50"
+                                            FontSize="18"
+                                            HeightRequest="38" WidthRequest="38"
+                                            Padding="0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MarkAsReadCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    <Button Text="🗑"
+                                            BackgroundColor="Transparent"
+                                            TextColor="#F44336"
+                                            FontSize="18"
+                                            HeightRequest="38" WidthRequest="38"
+                                            Padding="0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteBookCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                </VerticalStackLayout>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            </RefreshView>
+
+        </Grid>
+
+        <ContentPage.ToolbarItems>
+            <ToolbarItem Text="＋" Command="{Binding AddBookCommand}"/>
+        </ContentPage.ToolbarItems>
+
+    </ContentPage>

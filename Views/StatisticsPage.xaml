@@ -1,12 +1,75 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ProyectoFinal_Movil_BibliotecaPersonal.ViewModels"
              x:Class="ProyectoFinal_Movil_BibliotecaPersonal.Views.StatisticsPage"
-             Title="StatisticsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+            Style="{StaticResource PageStyle}"
+             Title="Estadísticas">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <Label Text="📊 Mis Estadísticas" Style="{StaticResource TitleStyle}"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               Color="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"/>
+
+            <!-- Stats Cards -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding TotalBooks}" FontSize="32" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Total Libros" Style="{StaticResource CaptionStyle}" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding ReadBooks}" FontSize="32" FontAttributes="Bold"
+                               TextColor="#4CAF50"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Libros Leídos" Style="{StaticResource CaptionStyle}" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding UnreadBooks}" FontSize="32" FontAttributes="Bold"
+                               TextColor="#FF9800"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Pendientes" Style="{StaticResource CaptionStyle}" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding TotalPages}" FontSize="32" FontAttributes="Bold"
+                               TextColor="#2196F3"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Páginas Leídas" Style="{StaticResource CaptionStyle}" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Porcentaje leído -->
+            <Border Style="{StaticResource CardStyle}">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{Binding ReadPercent, StringFormat='Has leído el {0} de tu biblioteca'}"
+                           Style="{StaticResource SubtitleStyle}" HorizontalOptions="Center"/>
+                    <ProgressBar Progress="{Binding ReadBooks}"
+                                 ProgressColor="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- GraphicsView -->
+            <Border Style="{StaticResource CardStyle}">
+                <VerticalStackLayout>
+                    <Label Text="Visualización Gráfica" Style="{StaticResource SubtitleStyle}" Margin="0,0,0,8"/>
+                    <GraphicsView Drawable="{Binding Drawable}"
+                                  HeightRequest="540"
+                                  BackgroundColor="Transparent"/>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

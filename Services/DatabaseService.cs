@@ -16,6 +16,8 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal.Services
             _database = new SQLiteAsyncConnection(dbPath);
             await _database.CreateTableAsync<Book>();
             _initialized = true;
+
+            System.Diagnostics.Debug.WriteLine($"DB PATH: {dbPath}");
         }
 
         public async Task<int> SaveBookAsync(Book book)

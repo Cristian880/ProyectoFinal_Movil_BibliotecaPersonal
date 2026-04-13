@@ -5,6 +5,7 @@
         public int TotalBooks { get; set; }
         public int ReadBooks { get; set; }
         public int UnreadBooks { get; set; }
+        public int TotalPages { get; set; }
         public Dictionary<string, int> BooksByGenre { get; set; } = new();
 
         public void Draw(ICanvas canvas, RectF dirtyRect)

@@ -22,6 +22,7 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal
 
             builder.Services.AddSingleton<DatabaseService>();
             builder.Services.AddSingleton<BookApiService>();
+            builder.Services.AddSingleton<AppShell>();
 
             builder.Services.AddTransient<LibraryViewModel>();
             builder.Services.AddTransient<BookDetailViewModel>();

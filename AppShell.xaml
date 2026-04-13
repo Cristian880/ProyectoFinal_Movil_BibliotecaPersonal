@@ -27,21 +27,24 @@
         <FlyoutItem.Icon>
             <FontImageSource Glyph="&#x1F4DA;" FontFamily="OpenSansRegular" Size="22"/>
         </FlyoutItem.Icon>
-        <ShellContent ContentTemplate="{DataTemplate views:LibraryPage}"/>
+        <ShellContent Route="LibraryPage"
+                      ContentTemplate="{DataTemplate views:LibraryPage}"/>
     </FlyoutItem>
 
     <FlyoutItem Title="Buscar Libros" Route="search">
         <FlyoutItem.Icon>
             <FontImageSource Glyph="&#x1F50D;" FontFamily="OpenSansRegular" Size="22"/>
         </FlyoutItem.Icon>
-        <ShellContent ContentTemplate="{DataTemplate views:SearchPage}"/>
+        <ShellContent Route="SearchPage"
+                      ContentTemplate="{DataTemplate views:SearchPage}"/>
     </FlyoutItem>
 
     <FlyoutItem Title="Estadísticas" Route="statistics">
         <FlyoutItem.Icon>
             <FontImageSource Glyph="&#x1F4CA;" FontFamily="OpenSansRegular" Size="22"/>
         </FlyoutItem.Icon>
-        <ShellContent ContentTemplate="{DataTemplate views:StatisticsPage}"/>
+        <ShellContent Route="StatisticsPage"
+                      ContentTemplate="{DataTemplate views:StatisticsPage}"/>
     </FlyoutItem>
-    
-</Shell>
+
+</Shell>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

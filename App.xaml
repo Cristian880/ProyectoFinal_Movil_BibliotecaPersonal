@@ -87,6 +87,18 @@
                 </Setter>
             </Style>
 
+            <!-- PrimaryButtonStyle -->
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor"
+            Value="{AppThemeBinding Light={StaticResource PrimaryLight},
+                                    Dark={StaticResource PrimaryDark}}"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Padding" Value="16,10"/>
+                <Setter Property="HeightRequest" Value="44"/>
+            </Style>
+
             <!-- SecondaryButtonStyle -->
             <Style x:Key="SecondaryButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="Transparent"/>

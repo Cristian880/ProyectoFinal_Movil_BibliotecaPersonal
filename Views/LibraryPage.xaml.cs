@@ -4,7 +4,11 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal.Views;
 
 public partial class LibraryPage : ContentPage
 {
-	public LibraryPage(LibraryViewModel vm)
+    public LibraryPage() : this(
+        IPlatformApplication.Current!.Services.GetRequiredService<LibraryViewModel>())
+    { }
+
+    public LibraryPage(LibraryViewModel vm)
     {
 		InitializeComponent();
         BindingContext = vm;

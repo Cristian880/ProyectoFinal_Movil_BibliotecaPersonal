@@ -11,35 +11,40 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal.Services
         public BookApiService()
         {
             _httpClient = new HttpClient();
-            _httpClient.Timeout = TimeSpan.FromSeconds(15);
+            _httpClient.Timeout = TimeSpan.FromSeconds(15);//si tarda mas de 15 segundos en conectarse manda una excepción 
         }
 
         public async Task<List<BookSearchResult>> SearchBooksAsync(string query)
         {
             try
             {
-                var encoded = Uri.EscapeDataString(query);
-                var url = $"{API_URL}?q={encoded}&maxResults=20&langRestrict=es";
-                var response = await _httpClient.GetStringAsync(url);
+                var encoded = Uri.EscapeDataString(query);// convierte "don quijote" → "don%20quijote"
+                                                          // necesario porque los espacios rompen la URL
+                var url = $"{API_URL}?q={encoded}&maxResults=20&langRestrict=es";//enlce de busqueda del libro, el cual busca todos los libros parecidos
+                //langRestrict=es se utiliza para indicar preferencia de libros en español
+                
+                var response = await _httpClient.GetStringAsync(url);//respues en json como string
 
-                using var doc = JsonDocument.Parse(response);
+                using var doc = JsonDocument.Parse(response);// parsea el string JSON a un árbol navegable
                 var results = new List<BookSearchResult>();
 
                 if (!doc.RootElement.TryGetProperty("items", out var items))
-                    return results;
+                    return results;//respuesta si no hay datos en el json (busqueda sin resultados)
 
                 foreach (var item in items.EnumerateArray())
                 {
-                    var info = item.GetProperty("volumeInfo");
+                    var info = item.GetProperty("volumeInfo");// entra en el nodo de volumInfo, informacion
                     var result = new BookSearchResult
                     {
                         Id = item.GetProperty("id").GetString() ?? "",
-                        Title = info.TryGetProperty("title", out var t) ? t.GetString() ?? "" : "Sin título",
+                        Title = info.TryGetProperty("title", out var t) ? t.GetString() 
+                        ?? "" : "Sin título",
                         Author = info.TryGetProperty("authors", out var a) && a.GetArrayLength() > 0
                             ? a[0].GetString() ?? "Autor desconocido"
                             : "Autor desconocido",
                     };
 
+                    // Thumbnail: reemplaza http por https porque iOS/Android bloquean HTTP
                     if (info.TryGetProperty("imageLinks", out var imgs) &&
                         imgs.TryGetProperty("thumbnail", out var thumb))
                         result.ThumbnailUrl = thumb.GetString()?.Replace("http://", "https://") ?? "";
@@ -59,6 +64,7 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal.Services
             }
         }
 
+        //hace una buscada igual pero por id para odtener los detalles de ese libro especifico 
         public async Task<BookDetail?> GetBookDetailAsync(string bookId)
         {
             try

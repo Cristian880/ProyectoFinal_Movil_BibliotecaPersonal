@@ -2,12 +2,12 @@
 
 namespace ProyectoFinal_Movil_BibliotecaPersonal.Helpers
 {
-
+    //medio entre accion de un boton y un metodo de ViewModel
     public class RelayCommand : ICommand
     {
-        private readonly Func<Task>? _executeAsync;
-        private readonly Action? _execute;
-        private readonly Func<bool>? _canExecute;
+        private readonly Func<bool>? _canExecute;//pregunta si se puede ejecutar la accion true o false
+        private readonly Action? _execute;// se ejecuta la accion
+        private readonly Func<Task>? _executeAsync;// avisa cuando cambia CanExecute
         private bool _isExecuting;
 
         public event EventHandler? CanExecuteChanged;
@@ -24,24 +24,25 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal.Helpers
             _canExecute = canExecute;
         }
         public bool CanExecute(object? parameter) =>
-       !_isExecuting && (_canExecute?.Invoke() ?? true);
+            !_isExecuting // si ya está corriendo → false → botón desactivado
+            && (_canExecute?.Invoke() ?? true);// evalúa la condición extra, si no hay ninguna → true
         public async void Execute(object? parameter)
         {
-            if (!CanExecute(parameter)) return;
+            if (!CanExecute(parameter)) return;// doble check de seguridad antes de empezar
             try
             {
-                _isExecuting = true;
-                RaiseCanExecuteChanged();
+                _isExecuting = true;// bloquea: nadie más puede ejecutar mientras corre
+                RaiseCanExecuteChanged(); // avisa a la UI → el botón se desactiva visualmente
 
                 if (_executeAsync != null)
-                    await _executeAsync();
+                    await _executeAsync();// ejecuta el método async y espera que termine
                 else
-                    _execute?.Invoke();
+                    _execute?.Invoke();// o ejecuta el método síncrono
             }
-            finally
+            finally                            
             {
-                _isExecuting = false;
-                RaiseCanExecuteChanged();
+                _isExecuting = false;// desbloquea
+                RaiseCanExecuteChanged();// avisa a la UI → el botón se reactiva
             }
         }
 

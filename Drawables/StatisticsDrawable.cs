@@ -99,7 +99,7 @@
             {
                 "#8B4513", "#D2691E", "#CD853F", "#DEB887", "#A0522D",
                 "#6B3A2A", "#C4884E", "#E8A87C", "#9B6B47", "#B8860B"
-            };
+            };//colores de la barras
 
             int i = 0;
             foreach (var (genre, count) in BooksByGenre.Take(maxBars))
@@ -166,7 +166,7 @@
                 if (!string.IsNullOrEmpty(currentLine))
                     lines.Add(currentLine);
 
-                // Máximo 4 líneas para que no se salga del canvas
+                // Máximo 3 líneas para que no se salga del canvas
                 int maxLines = 3;
 
                 for (int l = 0; l < Math.Min(lines.Count, maxLines); l++)
@@ -180,7 +180,7 @@
                         lineHeight,
                         HorizontalAlignment.Center,
                         VerticalAlignment.Top);
-                }
+                }// calcula el salto de línea para cada palabra y lo dibuja debajo de la barra, si el texto es muy largo se corta a 3 líneas para no salir del canvas
 
                 i++;
             }

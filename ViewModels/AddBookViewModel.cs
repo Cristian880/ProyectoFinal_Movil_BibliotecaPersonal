@@ -44,9 +44,17 @@ namespace ProyectoFinal_Movil_BibliotecaPersonal.ViewModels
                     await Shell.Current.DisplayAlertAsync("Validación", "El autor es obligatorio.", "OK");
                     return;
                 }
-
+                if (string.IsNullOrWhiteSpace(Genre))
+                {
+                    await Shell.Current.DisplayAlertAsync("Validación", "El género es obligatorio.", "OK");
+                    return;
+                }
+                if (!int.TryParse(PagesText, out var pages) || pages <= 0)
+                {
+                    await Shell.Current.DisplayAlertAsync("Validación", "La cantidad de páginas debe ser un número positivo.", "OK");
+                    return;
+                }
                 int.TryParse(YearText, out var year);
-                int.TryParse(PagesText, out var pages);
 
                 var book = new Book
                 {

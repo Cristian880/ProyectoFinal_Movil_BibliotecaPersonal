@@ -8,12 +8,12 @@
         public int TotalPages { get; set; }
         public Dictionary<string, int> BooksByGenre { get; set; } = new();
 
-        public void Draw(ICanvas canvas, RectF dirtyRect)
+        public void Draw(ICanvas canvas, RectF dirtyRect) // metodo que se llama para crear los graficos
         {
-            canvas.Antialias = true;
-            DrawPieChart(canvas, dirtyRect);
-            DrawBarChart(canvas, dirtyRect);
-            DrawStatNumbers(canvas, dirtyRect);
+            canvas.Antialias = true; // Suaviza los bordes
+            DrawPieChart(canvas, dirtyRect);    // Dibuja el gráfico circular
+            DrawBarChart(canvas, dirtyRect);    // Dibuja el gráfico de barras
+            DrawStatNumbers(canvas, dirtyRect); // Dibuja los números grandes
         }
 
         private void DrawPieChart(ICanvas canvas, RectF dirtyRect)
@@ -30,16 +30,16 @@
 
             float readAngle = (float)(ReadBooks * 360.0 / TotalBooks);
 
-            // Arco leídos (verde)
-            canvas.StrokeColor = Color.FromArgb("#4CAF50");
+            // Arco leídos (naranja)
+            canvas.StrokeColor = Color.FromArgb("#FF9800");
             canvas.StrokeSize = 22;
             canvas.DrawArc(cx - radius, cy - radius, radius * 2, radius * 2,
                 -90, -90 + readAngle, true, false);
 
-            // Arco pendientes (naranja)
+            // Arco pendientes (verde)
             if (UnreadBooks > 0)
             {
-                canvas.StrokeColor = Color.FromArgb("#FF9800");
+                canvas.StrokeColor = Color.FromArgb("#4CAF50");
                 canvas.StrokeSize = 22;
                 canvas.DrawArc(cx - radius, cy - radius, radius * 2, radius * 2,
                     -90 + readAngle, 270, true, false);
@@ -48,19 +48,22 @@
             // Texto centro
             canvas.FontColor = Color.FromArgb("#333333");
             canvas.FontSize = 14;
-            canvas.DrawString($"{(TotalBooks > 0 ? ReadBooks * 100 / TotalBooks : 0)}%",
+            canvas.DrawString($"{(TotalBooks > 0 ? ReadBooks * 100 / TotalBooks : 0)}%",//calculo porciento
                 cx - 20, cy - 10, 40, 20, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             // Leyenda
-            canvas.FillColor = Color.FromArgb("#4CAF50");
-            canvas.FillRectangle(cx + radius + 10, cy - 20, 12, 12);
-            canvas.FontColor = Color.FromArgb("#333333");
+            canvas.FillColor = Color.FromArgb("#4CAF50");//cuadro verde
+            canvas.FillRectangle(cx + radius + 12, cy - 20, 12, 12);
+
+            canvas.FillColor = Color.FromArgb("#FF9800");
+            canvas.FillRectangle(cx + radius + 12, cy, 12, 12);//cuadro naranja 
+
+            canvas.FontColor = Color.FromArgb("#EEEEEE");//texto
             canvas.FontSize = 11;
+
             canvas.DrawString($"Leídos ({ReadBooks})", cx + radius + 26, cy - 22, 90, 16,
                 HorizontalAlignment.Left, VerticalAlignment.Top);
 
-            canvas.FillColor = Color.FromArgb("#FF9800");
-            canvas.FillRectangle(cx + radius + 10, cy, 12, 12);
             canvas.DrawString($"Pendientes ({UnreadBooks})", cx + radius + 26, cy - 2, 100, 16,
                 HorizontalAlignment.Left, VerticalAlignment.Top);
         }
@@ -69,46 +72,115 @@
         {
             if (BooksByGenre.Count == 0) return;
 
-            float startY = 240f;
-            float chartHeight = 160f;
-            float barWidth = Math.Min(40f, (dirtyRect.Width - 40) / BooksByGenre.Count);
-            int maxVal = BooksByGenre.Values.Max();
+            // configuración de dimensiones
+            int maxBars = Math.Min(BooksByGenre.Count, 10);//generos
+            float gapBetweenBars = 28f;          // espacio entre barras
+            float barWidth = 55f;               // ancho fijo de cada barra
             float startX = 30f;
+            float startY = 260f;
+            float chartHeight = 180f;            // barras más altas
+            //float labelAreaHeight = 52f;         // zona reservada para el texto inferior (wrap)
+            int maxVal = BooksByGenre.Values.Max();
 
-            // Título
-            canvas.FontColor = Color.FromArgb("#333333");
-            canvas.FontSize = 13;
-            canvas.DrawString("Libros por Género", 10, startY - 20, dirtyRect.Width - 20, 20,
+            // Título sección
+            canvas.FontColor = Color.FromArgb("#FF9800");
+            canvas.FontSize = 15;
+            canvas.DrawString("Libros por Género", 10, startY - 24,
+                dirtyRect.Width - 20, 20,
                 HorizontalAlignment.Left, VerticalAlignment.Top);
 
             // Línea base
             canvas.StrokeColor = Color.FromArgb("#CCCCCC");
             canvas.StrokeSize = 1;
-            canvas.DrawLine(startX, startY + chartHeight, dirtyRect.Width - 10, startY + chartHeight);
+            canvas.DrawLine(startX, startY + chartHeight,
+                            dirtyRect.Width - 10, startY + chartHeight);
 
-            var colors = new[] { "#8B4513", "#D2691E", "#CD853F", "#DEB887", "#A0522D",
-                             "#6B3A2A", "#C4884E", "#E8A87C", "#9B6B47", "#B8860B" };
-            int i = 0;
-            foreach (var (genre, count) in BooksByGenre.Take(10))
+            var barColors = new[]
             {
-                float barHeight = maxVal > 0 ? (float)count / maxVal * chartHeight : 0;
-                float x = startX + i * (barWidth + 5);
-                float y = startY + chartHeight - barHeight;
+                "#8B4513", "#D2691E", "#CD853F", "#DEB887", "#A0522D",
+                "#6B3A2A", "#C4884E", "#E8A87C", "#9B6B47", "#B8860B"
+            };
 
-                canvas.FillColor = Color.FromArgb(colors[i % colors.Length]);
-                canvas.FillRectangle(x, y, barWidth, barHeight);
+            int i = 0;
+            foreach (var (genre, count) in BooksByGenre.Take(maxBars))
+            {
+                string barColor = barColors[i % barColors.Length];//selecciona uno de los los colores de BartColors
+                float barHeight = maxVal > 0 
+                                ? (float)count / maxVal * chartHeight 
+                                : 4f;// altura maxima segun la vista
 
-                // Número encima
-                canvas.FontColor = Color.FromArgb("#333333");
-                canvas.FontSize = 10;
-                canvas.DrawString(count.ToString(), x, y - 14, barWidth, 14,
+                float x = startX + i * (barWidth + gapBetweenBars);//margen donde empezara desde la izquierda x segun la vista o tamño disponible
+                float y = startY + chartHeight - barHeight;// margen donde empezara desde la base vertical y
+
+                // Barra 
+                canvas.FillColor = Color.FromArgb(barColor);
+                canvas.FillRoundedRectangle(x, y, barWidth, barHeight, 4); // esquinas redondeadas
+
+                // Número encima de la barra (mismo color que la barra) 
+                canvas.FontColor = Color.FromArgb(barColor);
+                canvas.FontSize = 11;
+                canvas.DrawString(count.ToString(),
+                    x - 4, y - 16, barWidth + 8, 16,
                     HorizontalAlignment.Center, VerticalAlignment.Top);
 
-                // Etiqueta abajo (rotada no disponible en ICanvas básico, ponemos abreviatura)
-                var label = genre.Length > 5 ? genre[..5] : genre;
-                canvas.FontSize = 9;
-                canvas.DrawString(label, x, startY + chartHeight + 2, barWidth, 14,
-                    HorizontalAlignment.Center, VerticalAlignment.Top);
+                // Etiqueta inferior con "word wrap" manual 
+                // Partimos el género en palabras y las distribuimos en líneas
+                // que quepan dentro del ancho de la barra + gap
+                float labelWidth = barWidth;
+                float labelX = x;  // zona de texto
+
+                float labelStartY = startY + chartHeight + 6f;
+                float lineHeight = 12f;
+
+                float fontSize = 12f;
+                canvas.FontSize = fontSize;
+                canvas.FontColor = Color.FromArgb(barColor);
+
+                //division de palabras 
+                var words = genre.Split(' ');
+                var lines = new List<string>();
+                string currentLine = "";
+
+                foreach (var word in words)
+                {
+                    // Estimamos ~6.5 px por carácter a fontSize 9
+                    string candidate = string.IsNullOrEmpty(currentLine)
+                                    ? word
+                                    : currentLine + " " + word;
+
+                    var size = canvas.GetStringSize(candidate, null, fontSize);
+                    float realWidth = size.Width;
+
+                    if (realWidth <= labelWidth)
+                    {
+                        currentLine = candidate;
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(currentLine))
+                            lines.Add(currentLine);
+
+                        currentLine = word;
+                    }
+                }
+                if (!string.IsNullOrEmpty(currentLine))
+                    lines.Add(currentLine);
+
+                // Máximo 4 líneas para que no se salga del canvas
+                int maxLines = 3;
+
+                for (int l = 0; l < Math.Min(lines.Count, maxLines); l++)
+                {
+
+                    canvas.DrawString(
+                        lines[l],
+                        labelX,          // centrado sobre barra + gap
+                        labelStartY + l * lineHeight,
+                        labelWidth,
+                        lineHeight,
+                        HorizontalAlignment.Center,
+                        VerticalAlignment.Top);
+                }
 
                 i++;
             }
@@ -116,14 +188,13 @@
 
         private void DrawStatNumbers(ICanvas canvas, RectF dirtyRect)
         {
-            float y = 450f;
-            float w = dirtyRect.Width / 3f;
+            float y = 570f;   // bajado un poco para dar espacio al label wrap
+            float w = dirtyRect.Width / 2f;
 
             var stats = new (string Label, string Value, string Color)[]
             {
-            ("Total", TotalBooks.ToString(), "#8B4513"),
-            ("Leídos", ReadBooks.ToString(), "#4CAF50"),
-            ("Páginas", TotalPages.ToString(), "#2196F3"),
+                ("Total",   TotalBooks.ToString(), "#8B4513"),
+                ("Leídos",  ReadBooks.ToString(),  "#4CAF50"),
             };
 
             for (int i = 0; i < stats.Length; i++)

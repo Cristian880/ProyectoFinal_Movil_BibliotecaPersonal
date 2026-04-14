@@ -9,7 +9,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="16">
 
-            <Label Text="📊 Mis Estadísticas" Style="{StaticResource TitleStyle}"/>
+            <Label Text="Mis Estadísticas" Style="{StaticResource TitleStyle}"/>
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                                Color="{AppThemeBinding Light=#8B4513, Dark=#CD853F}"/>
@@ -35,7 +35,7 @@
                 <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource CardStyle}">
                     <VerticalStackLayout HorizontalOptions="Center">
                         <Label Text="{Binding UnreadBooks}" FontSize="32" FontAttributes="Bold"
-                               TextColor="#FF9800"
+                               TextColor="#ff0000"
                                HorizontalOptions="Center"/>
                         <Label Text="Pendientes" Style="{StaticResource CaptionStyle}" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
@@ -65,7 +65,7 @@
                 <VerticalStackLayout>
                     <Label Text="Visualización Gráfica" Style="{StaticResource SubtitleStyle}" Margin="0,0,0,8"/>
                     <GraphicsView Drawable="{Binding Drawable}"
-                                  HeightRequest="540"
+                                  HeightRequest="750"
                                   BackgroundColor="Transparent"/>
                 </VerticalStackLayout>
             </Border>
